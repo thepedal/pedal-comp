@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "FYaW878QolA=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\lukep\\Desktop\\PedalComp\\PedalComp\\PedalComp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\lukep\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.26100.57\\microsoft.windows.sdk.net.ref.10.0.26100.57.nupkg.sha512"
+  ],
+  "logs": []
+}

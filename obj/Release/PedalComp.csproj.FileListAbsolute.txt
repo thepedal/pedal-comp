@@ -1,0 +1,15 @@
+C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\PedalComp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\PedalComp.AssemblyInfoInputs.cache
+C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\PedalComp.AssemblyInfo.cs
+C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\PedalComp.csproj.CoreCompileInputs.cache
+C:\Users\lukep\Desktop\PedalComp\PedalComp\bin\Release\PedalComp.NET.deps.json
+C:\Users\lukep\Desktop\PedalComp\PedalComp\bin\Release\PedalComp.NET.dll
+C:\Users\lukep\Desktop\PedalComp\PedalComp\bin\Release\PedalComp.NET.pdb
+C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\PedalComp.csproj.AssemblyReference.cache
+C:\Program Files\ReBuzz\Gear\Effects\Pedal Comp.NET.deps.json
+C:\Program Files\ReBuzz\Gear\Effects\Pedal Comp.NET.dll
+C:\Program Files\ReBuzz\Gear\Effects\Pedal Comp.NET.pdb
+C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\Pedal Comp.NET.dll
+C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\refint\Pedal Comp.NET.dll
+C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\Pedal Comp.NET.pdb
+C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\ref\Pedal Comp.NET.dll

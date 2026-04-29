@@ -13,3 +13,13 @@ C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\Pedal Comp.NET.dll
 C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\refint\Pedal Comp.NET.dll
 C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\Pedal Comp.NET.pdb
 C:\Users\lukep\Desktop\PedalComp\PedalComp\obj\Release\ref\Pedal Comp.NET.dll
+C:\Users\lukep\Desktop\projex_2026\ReBuzz_pedal_machines\PedalComp\PedalComp\obj\Release\PedalComp.csproj.AssemblyReference.cache
+C:\Users\lukep\Desktop\projex_2026\ReBuzz_pedal_machines\PedalComp\PedalComp\obj\Release\PedalComp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lukep\Desktop\projex_2026\ReBuzz_pedal_machines\PedalComp\PedalComp\obj\Release\PedalComp.AssemblyInfoInputs.cache
+C:\Users\lukep\Desktop\projex_2026\ReBuzz_pedal_machines\PedalComp\PedalComp\obj\Release\PedalComp.AssemblyInfo.cs
+C:\Users\lukep\Desktop\projex_2026\ReBuzz_pedal_machines\PedalComp\PedalComp\obj\Release\PedalComp.csproj.CoreCompileInputs.cache
+C:\Users\lukep\Desktop\projex_2026\ReBuzz_pedal_machines\PedalComp\PedalComp\obj\Release\PedalComp.sourcelink.json
+C:\Users\lukep\Desktop\projex_2026\ReBuzz_pedal_machines\PedalComp\PedalComp\obj\Release\Pedal Comp.NET.dll
+C:\Users\lukep\Desktop\projex_2026\ReBuzz_pedal_machines\PedalComp\PedalComp\obj\Release\refint\Pedal Comp.NET.dll
+C:\Users\lukep\Desktop\projex_2026\ReBuzz_pedal_machines\PedalComp\PedalComp\obj\Release\Pedal Comp.NET.pdb
+C:\Users\lukep\Desktop\projex_2026\ReBuzz_pedal_machines\PedalComp\PedalComp\obj\Release\ref\Pedal Comp.NET.dll

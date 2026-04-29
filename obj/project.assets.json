@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\lukep\\Desktop\\PedalComp\\PedalComp\\PedalComp.csproj",
+      "projectUniqueName": "C:\\Users\\lukep\\Desktop\\projex_2026\\ReBuzz_pedal_machines\\PedalComp\\PedalComp\\PedalComp.csproj",
       "projectName": "Pedal Comp.NET",
-      "projectPath": "C:\\Users\\lukep\\Desktop\\PedalComp\\PedalComp\\PedalComp.csproj",
+      "projectPath": "C:\\Users\\lukep\\Desktop\\projex_2026\\ReBuzz_pedal_machines\\PedalComp\\PedalComp\\PedalComp.csproj",
       "packagesPath": "C:\\Users\\lukep\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\lukep\\Desktop\\PedalComp\\PedalComp\\obj\\",
+      "outputPath": "C:\\Users\\lukep\\Desktop\\projex_2026\\ReBuzz_pedal_machines\\PedalComp\\PedalComp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

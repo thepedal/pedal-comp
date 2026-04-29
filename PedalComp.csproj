@@ -15,11 +15,11 @@
 
   <ItemGroup>
     <Reference Include="BuzzGUI.Interfaces">
-      <HintPath>libs\BuzzGUI.Interfaces.dll</HintPath>
+      <HintPath>C:\Program Files\ReBuzz\BuzzGUI.Interfaces.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="BuzzGUI.Common">
-      <HintPath>libs\BuzzGUI.Common.dll</HintPath>
+      <HintPath>C:\Program Files\ReBuzz\BuzzGUI.Common.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

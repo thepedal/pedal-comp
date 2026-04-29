@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FYaW878QolA=",
+  "dgSpecHash": "vO0AiT+0RTQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\lukep\\Desktop\\PedalComp\\PedalComp\\PedalComp.csproj",
+  "projectFilePath": "C:\\Users\\lukep\\Desktop\\projex_2026\\ReBuzz_pedal_machines\\PedalComp\\PedalComp\\PedalComp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lukep\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.26100.57\\microsoft.windows.sdk.net.ref.10.0.26100.57.nupkg.sha512"
   ],

@@ -191,6 +191,15 @@ namespace WDE.PedalComp
 
         public bool Work(Sample[] output, Sample[] input, int n, WorkModes mode)
         {
+            // No input signal — tell ReBuzz we produced nothing so it can
+            // skip calling us entirely and drop CPU usage to zero.
+            if (mode == WorkModes.WM_NOIO)
+            {
+                env    = 0f;
+                _grDb  = 0f;
+                return false;
+            }
+
             if (input == null || n == 0)
             {
                 _grDb = 0f;

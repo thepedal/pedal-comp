@@ -124,18 +124,80 @@ namespace WDE.PedalComp
         // Peak catches transients precisely; RMS averages energy and sounds
         // smoother on full mixes and bus material.
         [ParameterDecl(
-            Name        = "Detection",
-            Description = "Envelope detection mode.  0 = Peak,  1 = RMS (10 ms window).",
-            MinValue    = 0, MaxValue = 1, DefValue = 0)]
+            Name             = "Detection",
+            Description      = "Envelope detection mode. Peak = fast transient response, RMS = smoother on full mixes.",
+            MinValue         = 0, MaxValue = 1, DefValue = 0,
+            ValueDescriptions = new[] { "Peak", "RMS" })]
         public int Detection { get; set; } = 0;
 
-        // ── DSP helpers ───────────────────────────────────────────────────────
+        // ── Cached DSP coefficients ───────────────────────────────────────────
+        // Recomputed only when parameters or sample rate change, keeping
+        // expensive MathF.Exp / MathF.Pow calls out of the per-block hot path.
+        int   _cachedSr          = 0;
+        int   _cachedAttack      = -1;
+        int   _cachedRelease     = -1;
+        int   _cachedThresh      = -1;
+        int   _cachedKnee        = -1;
+        int   _cachedMakeup      = -1;
+
+        float _attackCoef        = 0f;
+        float _releaseCoef       = 0f;
+        float _fastReleaseCoef   = 0f;   // for program-dependent release
+        float _threshLin         = 0f;
+        float _kneeEntryLin      = 0f;   // threshold - knee/2 in linear
+        float _makeupLin         = 1f;
+
+        void UpdateCoefficients(int sr)
+        {
+            bool dirty = sr        != _cachedSr      ||
+                         Attack    != _cachedAttack   ||
+                         Release   != _cachedRelease  ||
+                         Threshold != _cachedThresh   ||
+                         Knee      != _cachedKnee     ||
+                         MakeupGain!= _cachedMakeup;
+
+            if (!dirty) return;
+
+            _cachedSr      = sr;
+            _cachedAttack  = Attack;
+            _cachedRelease = Release;
+            _cachedThresh  = Threshold;
+            _cachedKnee    = Knee;
+            _cachedMakeup  = MakeupGain;
+
+            float threshDb = ThresholdDb;
+
+            _attackCoef      = MathF.Exp(-1f / (Attack  * 0.001f * sr));
+            _releaseCoef     = MathF.Exp(-1f / (Release * 0.001f * sr));
+
+            // Fast release for program-dependent mode: quarter of the user
+            // release time, clamped to a minimum of 10 ms to avoid clicks.
+            float fastMs     = MathF.Max(Release * 0.25f, 10f);
+            _fastReleaseCoef = MathF.Exp(-1f / (fastMs  * 0.001f * sr));
+
+            _threshLin       = DbToLin(threshDb);
+            _kneeEntryLin    = DbToLin(threshDb - Knee * 0.5f);
+            _makeupLin       = DbToLin(MakeupGain);
+        }
 
         static float LinToDb(float lin) =>
             lin > 1e-9f ? 20f * MathF.Log10(lin) : -120f;
 
         static float DbToLin(float db) =>
             MathF.Pow(10f, db / 20f);
+
+        // Soft-clip: transparent below ~−0.9 dBFS, then smoothly saturates.
+        // Uses x/(1+|x|) in the overshoot zone — approaches 1.0 asymptotically,
+        // never hard-clips, and is a single multiply + divide per sample.
+        static float SoftClip(float x)
+        {
+            const float T = 0.9f;          // start of soft zone (~−0.9 dBFS)
+            float ax = MathF.Abs(x);
+            if (ax <= T) return x;
+            float over = (ax - T) / (1f - T);          // 0 → ∞
+            float sat  = T + (1f - T) * (over / (1f + over));   // approaches 1.0
+            return MathF.CopySign(sat, x);
+        }
 
         // Standard soft-knee gain reduction in dB.
         // dbIn  = signal level in dB
@@ -206,15 +268,13 @@ namespace WDE.PedalComp
                 return false;
             }
 
-            int   sr          = Global.Buzz.SelectedAudioDriverSampleRate;
-            float attackCoef  = MathF.Exp(-1f / (Attack  * 0.001f * sr));
-            float releaseCoef = MathF.Exp(-1f / (Release * 0.001f * sr));
+            int sr = Global.Buzz.SelectedAudioDriverSampleRate;
+            UpdateCoefficients(sr);
+
             float threshDb    = ThresholdDb;
-            float threshLin   = DbToLin(threshDb);
             float knee        = (float)Knee;
             float ratio       = (float)Ratio;
-            float makeup      = DbToLin(MakeupGain);
-            float wetF        = WetDry  / 100f;
+            float wetF        = WetDry / 100f;
             float dryF        = 1f - wetF;
 
             EnsureLookahead(sr);
@@ -258,14 +318,29 @@ namespace WDE.PedalComp
 
                 _laWrite = readIdx;   // advance write to old read position
 
-                // ── Envelope follower on selected detection level ─────────────
-                float coef = level > env ? attackCoef : releaseCoef;
+                // ── Envelope follower — program-dependent release ─────────────
+                // When the signal drops sharply, the release speeds up
+                // proportionally (blends toward _fastReleaseCoef). This
+                // eliminates pumping on material with sudden dynamic changes
+                // without needing the user to tune the release parameter.
+                float coef;
+                if (level >= env)
+                {
+                    coef = _attackCoef;
+                }
+                else
+                {
+                    // dropRatio → 0 = signal gone silent (use fast release)
+                    //            → 1 = signal barely falling (use full release)
+                    float dropRatio = env > 1e-9f ? level / env : 0f;
+                    coef = _fastReleaseCoef + (_releaseCoef - _fastReleaseCoef) * dropRatio;
+                }
                 env = level + (env - level) * coef;
 
                 // ── Gain computation (soft or hard knee) ──────────────────────
                 float gr   = 1f;
                 float dbGR = 0f;
-                if (ratio > 1.001f && env > threshLin * DbToLin(-knee * 0.5f))
+                if (ratio > 1.001f && env > _kneeEntryLin)
                 {
                     dbGR = SoftKneeGR(LinToDb(env), threshDb, knee, ratio);
                     if (dbGR > 0f)
@@ -276,15 +351,22 @@ namespace WDE.PedalComp
                 }
 
                 // ── Apply gain + makeup + wet/dry to the delayed signal ───────
-                // dry = delayed unchanged; wet = delayed * gr * makeup
-                // Both paths use the same delayed sample → always time-aligned.
-                float outL = delayed.L * (gr * makeup * wetF + dryF);
-                float outR = delayed.R * (gr * makeup * wetF + dryF);
-                output[i]  = new Sample(outL / SCALE, outR / SCALE);
+                float outL = delayed.L * (gr * _makeupLin * wetF + dryF);
+                float outR = delayed.R * (gr * _makeupLin * wetF + dryF);
+
+                // ── Soft-clip — catch any peaks that made it through ───────────
+                // Clip indicator fires if signal entered the soft zone.
+                float preSoftL = outL;
+                float preSoftR = outR;
+                outL = SoftClip(outL);
+                outR = SoftClip(outR);
+                if (MathF.Abs(preSoftL) > 0.9f || MathF.Abs(preSoftR) > 0.9f)
+                    _clip = CLIP_HOLD;
+
+                output[i] = new Sample(outL / SCALE, outR / SCALE);
 
                 float outPeak = MathF.Max(MathF.Abs(outL), MathF.Abs(outR));
                 if (outPeak > maxOut) maxOut = outPeak;
-                if (outPeak > 1f) _clip = CLIP_HOLD;
             }
 
             _meterIn  = maxIn;
@@ -396,7 +478,7 @@ namespace WDE.PedalComp
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin          = new Thickness(0, 0, 0, 0),
                 Cursor          = Cursors.Hand,
-                ToolTip         = "CLIP — click to reset"
+                ToolTip         = "SAT — signal in soft-clip zone; click to reset"
             };
             clipLight.MouseLeftButtonDown += (_, _) => comp?.ClearClip();
             Grid.SetColumn(clipLight, 1);

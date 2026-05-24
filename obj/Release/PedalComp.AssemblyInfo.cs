@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Pedal Comp.NET")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60e7dd6a268b4b44e423fc9ec6ba95ad49a11404")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d4bd1098d0480852a0121a58b9e419418c24787")]
 [assembly: System.Reflection.AssemblyProductAttribute("Pedal Comp.NET")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Pedal Comp.NET")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -200,15 +200,19 @@ namespace WDE.PedalComp
             MathF.Pow(10f, db / 20f);
 
         // Fast LinToDb using IEEE 754 bit extraction.
-        // Replaces MathF.Log10 in the per-sample hot path.
-        // Accuracy: ±0.1 dB — more than sufficient for gain computation.
+        // Replaces MathF.Log10 in the per-sample hot path. Accuracy: ±0.01 dB.
+        // The mantissa polynomial approximates log2(1+m) on [0,1) and is exact
+        // at both ends (p(0)=0, p(1)=1), so the result is continuous across
+        // every power-of-two boundary. The previous quadratic,
+        // m*(1.4142 - 0.7071*m), reached only 0.7071 at m→1: a 1.76 dB jump
+        // every 6.02 dB, which turned into audible gain steps (clicks).
         static float FastLinToDb(float lin)
         {
             if (lin <= 1e-9f) return -120f;
             int   bits = BitConverter.SingleToInt32Bits(lin);
             float exp  = (bits >> 23) - 127f;
             float mant = BitConverter.Int32BitsToSingle((bits & 0x007FFFFF) | 0x3F800000) - 1f;
-            float log2 = exp + mant * (1.4142f - 0.7071f * mant);
+            float log2 = exp + mant * (1.420865f + mant * (-0.577251f + mant * 0.156386f));
             return log2 * 6.02059f;   // log2 → dB
         }
 
@@ -219,7 +223,9 @@ namespace WDE.PedalComp
             float x  = db * 0.16609f;           // db × log2(10)/20
             float xi = MathF.Floor(x);
             float xf = x - xi;
-            float p  = 1f + xf * (0.69315f + xf * (0.24023f + xf * 0.05550f));
+            // Cubic for 2^xf on [0,1), exact at both ends (p(1)=2) so there is
+            // no step at integer boundaries. Accuracy: ±0.002 dB.
+            float p  = 1f + xf * (0.695928f + xf * (0.224946f + xf * 0.079125f));
             int   e  = Math.Clamp((int)xi + 127, 1, 254);
             return BitConverter.Int32BitsToSingle(e << 23) * p;
         }
@@ -246,8 +252,12 @@ namespace WDE.PedalComp
             float halfW = W * 0.5f;
             if (2f * dbOver < -W) return 0f;
             if (2f * dbOver > W)  return dbOver * slope;
+            // Quadratic knee: (x + W/2)^2 / (2W) * slope. Meets the hard-knee
+            // line with matching value and slope at both edges of the knee.
+            // (Up to 1.3 this divided by W, not 2W: double the gain reduction
+            // inside the knee and a step of W/2 * slope dB at its top edge.)
             float t = dbOver + halfW;
-            return t * t * slope / W;
+            return t * t * slope / (2f * W);
         }
 
         // ── Lookahead buffer management ───────────────────────────────────────

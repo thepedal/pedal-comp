@@ -64,6 +64,7 @@ Restart ReBuzz and **Pedal Comp** will appear in the Effects list.
 
 | Version | Changes |
 |---|---|
+| 1.4 | Fixes crackle (clusters of ticks on drum hits) under compression. The fast dB conversion used for the detector jumped by 1.76 dB just below every power of two, so the gain reduction stepped instantly each time the envelope crossed -6, -12, -18, -24 dBFS and so on (about 1.5 dB at 8:1). Both fast conversions now use cubics that are exact at their range ends: level to dB within 0.01 dB, dB to gain within 0.002 dB, with no steps. Soft-knee fix (as in the Buzz 1503 port): the knee divided by W instead of 2W, applying double the gain reduction inside the knee and a step at its top edge (4.8 dB at knee 11 dB, 8:1); the knee now joins the ratio line smoothly. Gain reduction is lower than in 1.3, especially with wide knees, so check thresholds on existing songs. |
 | 1.3 | Fast log/exp in DSP hot path, auto makeup gain, GR peak hold, transfer curve display |
 | 1.2 | Cached DSP coefficients, output soft-clip, program-dependent release, Peak/RMS label |
 | 1.1 | Zero CPU when idle (WM_NOIO), RMS detection mode, auto-clearing SAT indicator |

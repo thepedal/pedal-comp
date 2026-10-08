@@ -10,6 +10,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Pedal Comp.NET</AssemblyName>
     <RootNamespace>WDE.PedalComp</RootNamespace>
+    <Version>1.4.0</Version>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>C:\Program Files\ReBuzz\Gear\Effects</OutputPath>
     <Platforms>AnyCPU;x64</Platforms>

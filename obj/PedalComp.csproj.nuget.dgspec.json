@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Users\\lukep\\Desktop\\projex_2026\\ReBuzz_pedal_machines\\PedalComp\\PedalComp\\PedalComp.csproj": {
-      "version": "1.4.0",
+      "version": "1.5.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\lukep\\Desktop\\projex_2026\\ReBuzz_pedal_machines\\PedalComp\\PedalComp\\PedalComp.csproj",
         "projectName": "Pedal Comp.NET",
@@ -79,7 +79,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.403/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

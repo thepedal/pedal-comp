@@ -2,30 +2,39 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <UseWPF>true</UseWPF>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <GenerateDependencyFile>false</GenerateDependencyFile>
+    <NoWarn>MSB3277</NoWarn>
     <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Pedal Comp.NET</AssemblyName>
     <RootNamespace>WDE.PedalComp</RootNamespace>
-    <Version>1.4.0</Version>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>C:\Program Files\ReBuzz\Gear\Effects</OutputPath>
+    <Version>1.5.0</Version>
     <Platforms>AnyCPU;x64</Platforms>
     <PlatformTarget>x64</PlatformTarget>
+    <ReBuzzDir Condition="'$(ReBuzzDir)' == ''">C:\Program Files\ReBuzz</ReBuzzDir>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="BuzzGUI.Interfaces">
-      <HintPath>C:\Program Files\ReBuzz\BuzzGUI.Interfaces.dll</HintPath>
+      <HintPath>$(ReBuzzDir)\BuzzGUI.Interfaces.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <!-- Global (sample rate), MenuItemVM / SimpleCommand (About entry). -->
     <Reference Include="BuzzGUI.Common">
-      <HintPath>C:\Program Files\ReBuzz\BuzzGUI.Common.dll</HintPath>
+      <HintPath>$(ReBuzzDir)\BuzzGUI.Common.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+
+  <!-- Effect: deploy the DLL only to Gear\Effects. Build elevated with ReBuzz closed. -->
+  <Target Name="DeployToReBuzz" AfterTargets="Build">
+    <Message Text="Deploying $(TargetFileName) -> $(ReBuzzDir)\Gear\Effects\" Importance="high" />
+    <Copy SourceFiles="$(TargetPath)"
+          DestinationFolder="$(ReBuzzDir)\Gear\Effects\"
+          ContinueOnError="true" />
+  </Target>
 
 </Project>
